@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
-
+var blogsRouter = require('../routes/blogs')
 
 const auth_Controller = require('../controller/authController');
-
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -16,7 +15,7 @@ router.get('/login/:userID/:userPW/', auth_Controller.login);
 // register a new account to login
 router.post('/register/:userID/:userPW/', auth_Controller.register);
 
-
+router.use('/blogs',blogsRouter)
 
 module.exports = router;
 

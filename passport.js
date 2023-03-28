@@ -65,3 +65,14 @@ module.exports.genPassword = function genPassword(password){
       hash: genHash
     };
 }
+
+module.exports.verifyToken = function verifyToken(req, res, next) {
+const token = req.headers['token'];
+if(typeof token !== 'undefined'){
+  req.token = token;
+  console.log(token);
+  next();
+}else{
+  res.sendStatus(403);
+}
+}
