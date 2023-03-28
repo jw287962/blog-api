@@ -1,19 +1,50 @@
 var express = require('express');
 var router = express.Router();
 const genPassword = require('../passport').genPassword
+const validPassword = require('../passport').validPassword
 const User = require('../models/user');
+// const passport = require('passport');
+
+const jwt = require('jsonwebtoken');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-// validate pw
-router.get('/login/:userID/:userPW', function(req, res, next) {
-  const {userID, userPW} = req.params;
-  
 
-  res.json({token: "verified TOken"});
+router.get('/login/:userID/:userPW/', async function(req, res, next) {
+  const {userID, userPW} = req.params;
+  try{
+    const user = await User.findOne({username: userID})
+    if(!user){
+      res.status(401).json({
+          message: "USER NOT FOUND"
+      })
+  
+    }else{
+      const hashedPW = validPassword(userPW, user.password, user.salt);
+      console.log(hashedPW);
+      if(hashedPW){
+        jwt.sign({userID}, 'secretkey', {expiresIn: '1d'}, (err, token)  => {
+          if(err){
+            res.json('jwt sign in error');
+          }
+          res.json({token});
+        })
+      }else{
+        res.status(401).json({
+          message: "INCORRECT PASSWORD"
+      })
+      }
+    }
+    
+  }catch(e){
+    console.error("ERROR:", e);
+        res.json({message: "Login Error..."})
+  }
+
+
 });
 
 router.post('/register/:userID/:userPW/', async function(req, res, next) {
@@ -26,7 +57,7 @@ router.post('/register/:userID/:userPW/', async function(req, res, next) {
   const result = await User.find({username: userID}).exec();
   console.log(result.length);
 
-  if(result.length === 1){
+  if(result.length != 0 ){
     res.json({message: "user EXISTS"})
   }else{
 
@@ -37,11 +68,9 @@ router.post('/register/:userID/:userPW/', async function(req, res, next) {
         salt: hashSalt.salt,
         blogger: Boolean(isBlogger),
       })
-  
      const createUser = await User.create(user);
       console.log(createUser);
-  
-      res.json({user: userID, blogger: isBlogger, hashed: "hashed", register: "registering user"});
+      res.json({user: userID, isBlogger, hashSalt: "hashed n salt", register: "registering user"});
     }catch (e){
         console.error("ERROR:", e);
         res.json({message: "Can't Create User"})
