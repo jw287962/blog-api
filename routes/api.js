@@ -1,88 +1,20 @@
 var express = require('express');
 var router = express.Router();
-const genPassword = require('../passport').genPassword
-const validPassword = require('../passport').validPassword
-const User = require('../models/user');
-// const passport = require('passport');
 
-const jwt = require('jsonwebtoken');
+
+const auth_Controller = require('../controller/authController');
+
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+// login  returns TOKEN
+router.get('/login/:userID/:userPW/', auth_Controller.login);
 
-router.get('/login/:userID/:userPW/', async function(req, res, next) {
-  const {userID, userPW} = req.params;
-  try{
-    const user = await User.findOne({username: userID})
-    if(!user){
-      res.status(401).json({
-          message: "USER NOT FOUND"
-      })
-  
-    }else{
-      const hashedPW = validPassword(userPW, user.password, user.salt);
-      console.log(hashedPW);
-      if(hashedPW){
-        jwt.sign({userID}, 'secretkey', {expiresIn: '1d'}, (err, token)  => {
-          if(err){
-            res.json('jwt sign in error');
-          }
-          res.json({token});
-        })
-      }else{
-        res.status(401).json({
-          message: "INCORRECT PASSWORD"
-      })
-      }
-    }
-    
-  }catch(e){
-    console.error("ERROR:", e);
-        res.json({message: "Login Error..."})
-  }
-
-
-});
-
-router.post('/register/:userID/:userPW/', async function(req, res, next) {
-  // hash password and salt
-  // the front end will be where i will need to escape and stuff i guess? before sending it here.
-  const {userID, userPW} = req.params;
-  const isBlogger = req.query;
-  const hashSalt = genPassword(userPW);
-  // prob need to search db and see if there is a user already in
-  const result = await User.find({username: userID}).exec();
-  console.log(result.length);
-
-  if(result.length != 0 ){
-    res.json({message: "user EXISTS"})
-  }else{
-
-    try{
-      const user = new User({
-        username: userID,
-        password: hashSalt.hash, //hashed
-        salt: hashSalt.salt,
-        blogger: Boolean(isBlogger),
-      })
-     const createUser = await User.create(user);
-      console.log(createUser);
-      res.json({user: userID, isBlogger, hashSalt: "hashed n salt", register: "registering user"});
-    }catch (e){
-        console.error("ERROR:", e);
-        res.json({message: "Can't Create User"})
-    }
-    
-  }
-
-  
-
-    
- 
-});
+// register a new account to login
+router.post('/register/:userID/:userPW/', auth_Controller.register);
 
 
 
