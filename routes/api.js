@@ -8,9 +8,11 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get('/login', function(req, res, next) {
-
+// validate pw
+router.get('/login/:userID/:userPW', function(req, res, next) {
+  const {userID, userPW} = req.params;
   
+
   res.json({token: "verified TOken"});
 });
 
@@ -33,7 +35,7 @@ router.post('/register/:userID/:userPW/', async function(req, res, next) {
         username: userID,
         password: hashSalt.hash, //hashed
         salt: hashSalt.salt,
-        blogger: isBlogger,
+        blogger: Boolean(isBlogger),
       })
   
      const createUser = await User.create(user);
