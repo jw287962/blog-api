@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const blogSchema = new Schema({
  user: {type: Schema.Types.ObjectId, ref: "User"},  
  date: {type: Date},
+ title: {type: String},
  message: {type: String},
  comment: {type: Array},
 })
