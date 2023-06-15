@@ -1,20 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
 const blogSchema = new Schema({
- user: {type: Schema.Types.ObjectId, ref: "User"},  
- date: {type: Date},
- title: {type: String},
- message: {type: String},
- comment: {type: Array},
-})
+  user: { type: Schema.Types.ObjectId, ref: "User" },
+  date: { type: Date },
+  title: { type: String },
+  message: { type: String },
+  comment: { type: Array },
+});
 
-
+// comments should hold an array of comment.js Models
 
 // CategorySchema.virtual('URL').get(function() {
 //   return `/inventory/category/${this._id}`
 // });
 
-
-module.exports = mongoose.model('Blog',blogSchema)
+module.exports = mongoose.model("Blog", blogSchema);
