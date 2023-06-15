@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const Blog = require("../models/blogs");
-const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 
 exports.blogs_list = async function (req, res, next) {
@@ -26,8 +25,9 @@ exports.blogs_id = async function (req, res, next) {
     "user",
     "username"
   );
-  const authData = req.authData;
   if (req.authData) {
+    const authData = req.authData;
+
     // get blogs from database
     res.json({
       message: "Single Blog Fetch",
@@ -55,6 +55,8 @@ exports.create_blog_post = [
     .withMessage("Add content to your blog post"),
   async (req, res, next) => {
     const authData = req.authData;
+    console.log(req.authData);
+
     const user = await User.find({ username: req.authData.userID });
     if (user[0].blogger) {
       const errors = validationResult(req);
