@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const verifyToken = require("../passport").verifyToken;
 
-const auth_Controller = require("../controller/authController");
 const blog_Controller = require("../controller/blogController");
 const jwt = require("jsonwebtoken");
 /* GET users listing. */

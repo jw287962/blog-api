@@ -2,37 +2,37 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 var crypto = require("crypto");
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "email",
-      passwordField: "password",
-    },
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "email",
+//       passwordField: "password",
+//     },
 
-    function (email, password, cb) {
-      console.log(email);
+//     function (email, password, cb) {
+//       console.log(email);
 
-      // hash function
+//       // hash function
 
-      //this one is typically a DB call. Assume that the returned user object is pre-formatted and ready for storing in JWT
+//       //this one is typically a DB call. Assume that the returned user object is pre-formatted and ready for storing in JWT
 
-      return UserModel.findOne({ email, password })
-        .then((user) => {
-          if (!user) {
-            return cb(null, false, { message: "Incorrect email or password." });
-          }
-          const isValid = validPassword(password, user.hash, user.salt);
-          if (isValid) {
-            return cb(null, user, { message: "Logged In Successfully" });
-          } else {
-            return cb(null, false, { message: "pw incorrect" });
-            // password wrong
-          }
-        })
-        .catch((err) => cb(err));
-    }
-  )
-);
+//       return UserModel.findOne({ email, password })
+//         .then((user) => {
+//           if (!user) {
+//             return cb(null, false, { message: "Incorrect email or password." });
+//           }
+//           const isValid = validPassword(password, user.hash, user.salt);
+//           if (isValid) {
+//             return cb(null, user, { message: "Logged In Successfully" });
+//           } else {
+//             return cb(null, false, { message: "pw incorrect" });
+//             // password wrong
+//           }
+//         })
+//         .catch((err) => cb(err));
+//     }
+//   )
+// );
 
 // passport.serializeUser(function(user, done) {
 //   done(null, user.id);
@@ -69,12 +69,12 @@ module.exports.genPassword = function genPassword(password) {
   };
 };
 
-module.exports.verifyToken = function verifyToken(req, res, next) {
-  const token = req.headers["token"];
-  if (typeof token !== "undefined") {
-    req.token = token;
-    next();
-  } else {
-    next();
-  }
-};
+// module.exports.verifyToken = function verifyToken(req, res, next) {
+//   const token = req.headers["token"];
+//   if (typeof token !== "undefined") {
+//     req.token = token;
+//     next();
+//   } else {
+//     next();
+//   }
+// };

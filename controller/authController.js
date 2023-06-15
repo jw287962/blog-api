@@ -3,6 +3,7 @@ const validPassword = require("../passport").validPassword;
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+
 exports.login = async function (req, res, next) {
   const { userID, userPW } = req.params;
   const user = await User.findOne({ username: userID }, { username, blogger });
@@ -62,7 +63,7 @@ exports.register = async function (req, res, next) {
       });
     } catch (e) {
       console.error("ERROR:", e);
-      res.json({ message: "Can't Create User" });
+      res.json({ message: "Can't Create User", e });
     }
   }
 };
